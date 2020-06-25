@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+
+##
+## EPITECH PROJECT, 2020
+## 203hotline
+## File description:
+## 203hotline
+##
+
+import sys
+import math
+import time
+
+class Hotline():
+    def __init__(self, n = "", k = "", d = ""):
+        self.verifyInteger(n, k, d)
+        if (n != "" and k != ""):
+            self.binomialCoef()
+        elif (d != ""):
+            self.binomialDistrib()
+            print("")
+            self.poissonDistrib()
+        else:
+            exit(84)
+
+    def binomialCoef(self):
+        print("{}-combinations of a set of size {}:".format(self.k, self.n))
+        print(self.calcCombination(self.n, self.k))
+
+    def calcCombination(self, n, k):
+        try:
+            returnValue = math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
+            return returnValue
+        except:
+            return 0
+
+    def poissonDistrib(self):
+        newlineNb = 4
+        overload = 0
+        print("Poisson distribution:")
+        start = time.time()
+        for iterator in range (0, 51):
+            poisson = self.calcPoisson(self.d / (8 * 3600) * 3500, iterator)
+            if (iterator <= 25):
+                overload += poisson
+            if (iterator != newlineNb and iterator != 50):
+                print("{} -> {:.3f}".format(iterator, poisson), end='\t')
+            else:
+                print("{} -> {:.3f}".format(iterator, poisson))
+                newlineNb += 5
+        print("Overload: {}%".format(round((1 - overload) * 100, 1)))
+        print("Computation time: {:.2f} ms".format(round((time.time() - start), 2)))
+
+    def calcPoisson(self, x, k):
+        try:
+            returnValue = (math.exp((-1) * x) * pow(x, k)) / math.factorial(k)
+            return returnValue
+        except:
+            return 0
+
+    def binomialDistrib(self):
+        newlineNb = 4
+        overload = 0
+        print("Binomial distribution:")
+        start = time.time()
+        for iterator in range (0, 51):
+            binomial = self.calcBinomial(self.d / (8 * 3600), 3500, iterator)
+            if (iterator <= 25):
+                overload += binomial
+            if (iterator != newlineNb and iterator != 50):
+                print("{} -> {:.3f}".format(iterator, binomial), end='\t')
+            else:
+                print("{} -> {:.3f}".format(iterator, binomial))
+                newlineNb += 5
+        print("Overload: {}%".format(round((1 - overload) * 100, 1)))
+        print("Computation time: {:.2f} ms".format(round((time.time() - start), 2)))
+
+    def calcBinomial(self, p, n, k):
+        try:
+            returnValue = self.calcCombination(n, k) * pow(p, k) * pow((1 - p), n - k)
+            return returnValue
+        except:
+            return 0
+
+    def verifyInteger(self, n, k, d):
+        if (d == ""):
+            try:
+                if (len(n) != len(str(int(n))) or len(k) != len(str(int(k)))):
+                    exit(84)
+            except:
+                exit(84)
+            self.n = int(n)
+            self.k = int(k)
+            if (self.n < 0 or self.k < 0 or self.k > self.n):
+                exit(84)
+        else:
+            try:
+                if (len(d) != len(str(int(d)))):
+                    exit(84)
+            except:
+                exit(84)
+            self.d = int(d)
+            if (self.d < 0):
+                exit(84)
+
+def help():
+    try:
+        with open("HELP.txt", "r") as file:
+            print(file.read())
+    except:
+        print("Error: Undefined help file.")
+
+if __name__ == "__main__":
+    argc = len(sys.argv)
+
+    if (argc == 2 and sys.argv[1] == "-h"):
+        help()
+    elif (argc == 2):
+        myHotline = Hotline(d = sys.argv[1])
+    elif (argc == 3):
+        myHotline = Hotline(n=sys.argv[1], k=sys.argv[2])
+    else:
+        exit(84)
